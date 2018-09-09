@@ -2,5 +2,6 @@
 /target/release
 /target/.rustc_info.json
 c.data
+CMakeLists.txt
 **/*.rs.bk
 Cargo.lock

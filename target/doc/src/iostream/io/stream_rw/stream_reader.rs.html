@@ -247,6 +247,87 @@
 <span id="247">247</span>
 <span id="248">248</span>
 <span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span>::<span class="ident">Stream</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -286,6 +367,14 @@
         }
 
         <span class="prelude-val">Ok</span>(<span class="ident">StreamReader</span> { <span class="ident">base_stream</span>: <span class="ident">stream</span> ,<span class="ident">endian</span>:<span class="ident">EndianType</span>::<span class="ident">BigEndian</span>})
+    }
+
+    <span class="doccomment">/// peek the current stream next byte</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+        <span class="kw">let</span> <span class="ident">d</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">base_stream</span>.<span class="ident">read_byte</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">p</span><span class="op">=</span><span class="self">self</span>.<span class="ident">base_stream</span>.<span class="ident">position</span>()<span class="op">-</span><span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">base_stream</span>.<span class="ident">set_position</span>(<span class="ident">p</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">d</span>)
     }
 
 
@@ -348,7 +437,7 @@
             <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
         }
             <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i16,need length 2,read length {}&quot;</span>,<span class="ident">r</span>))
+                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for u16,need length 2,read length {}&quot;</span>,<span class="ident">r</span>))
             }
 
     }
@@ -374,7 +463,7 @@
             <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
         }
             <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i16,need length 4,read length {}&quot;</span>,<span class="ident">r</span>))
+                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for u32,need length 4,read length {}&quot;</span>,<span class="ident">r</span>))
             }
 
     }
@@ -383,26 +472,24 @@
     <span class="doccomment">/// read i32 from stream,return it value</span>
     <span class="doccomment">///</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_i32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">i32</span>,<span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>:[<span class="ident">u8</span>;<span class="number">4</span>]<span class="op">=</span>[<span class="number">0</span>;<span class="number">4</span>];
-        <span class="kw">let</span> <span class="ident">r</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>,<span class="number">0</span>,<span class="number">4</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>: [<span class="ident">u8</span>; <span class="number">4</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span>];
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>, <span class="number">0</span>, <span class="number">4</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="ident">r</span><span class="op">==</span><span class="number">4</span>{
+        <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">4</span> {
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">data</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">i32</span>);
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">EndianType</span>::<span class="ident">BigEndian</span><span class="op">=</span><span class="self">self</span>.<span class="ident">endian</span>{
-                    <span class="kw">let</span> <span class="ident">result</span><span class="op">=</span><span class="ident">swap_i32</span>(<span class="kw-2">&amp;</span><span class="ident">result</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">EndianType</span>::<span class="ident">BigEndian</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">endian</span> {
+                    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">swap_i32</span>(<span class="kw-2">&amp;</span><span class="ident">result</span>);
                     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
-                }<span class="kw">else</span> {
+                } <span class="kw">else</span> {
                     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
                 }
             }
-        }<span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span><span class="op">==</span><span class="number">0</span>{
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i32,need length 4,read length {}&quot;</span>, <span class="ident">r</span>))
         }
-            <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i16,need length 4,read length {}&quot;</span>,<span class="ident">r</span>))
-            }
-
     }
 
     <span class="doccomment">///</span>
@@ -425,7 +512,7 @@
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i16,need length 8,read length {}&quot;</span>, <span class="ident">r</span>))
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i64,need length 8,read length {}&quot;</span>, <span class="ident">r</span>))
         }
     }
 
@@ -433,27 +520,66 @@
     <span class="doccomment">///read u64 from stream,return it value</span>
     <span class="doccomment">///</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u64</span>,<span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>:[<span class="ident">u8</span>;<span class="number">8</span>]<span class="op">=</span>[<span class="number">0</span>;<span class="number">8</span>];
-        <span class="kw">let</span> <span class="ident">r</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>,<span class="number">0</span>,<span class="number">8</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>: [<span class="ident">u8</span>; <span class="number">8</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="number">8</span>];
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>, <span class="number">0</span>, <span class="number">8</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="ident">r</span><span class="op">==</span><span class="number">8</span>{
+        <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">8</span> {
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">data</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u64</span>);
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">EndianType</span>::<span class="ident">BigEndian</span><span class="op">=</span><span class="self">self</span>.<span class="ident">endian</span>{
-                    <span class="kw">let</span> <span class="ident">result</span><span class="op">=</span><span class="ident">swap_u64</span>(<span class="kw-2">&amp;</span><span class="ident">result</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">EndianType</span>::<span class="ident">BigEndian</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">endian</span> {
+                    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">swap_u64</span>(<span class="kw-2">&amp;</span><span class="ident">result</span>);
                     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
-                }<span class="kw">else</span> {
+                } <span class="kw">else</span> {
                     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
                 }
             }
-        }<span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span><span class="op">==</span><span class="number">0</span>{
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for u64,need length 8,read length {}&quot;</span>, <span class="ident">r</span>))
         }
-            <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for i16,need length 8,read length {}&quot;</span>,<span class="ident">r</span>))
-            }
-
     }
+
+    <span class="doccomment">///</span>
+    <span class="doccomment">///read f32 from stream,return it value</span>
+    <span class="doccomment">///</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_single</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">f32</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>: [<span class="ident">u8</span>; <span class="number">4</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span>];
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>, <span class="number">0</span>, <span class="number">4</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">4</span> {
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">f32</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">data</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">f32</span>);
+                <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
+            }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for f32,need length 4,read length {}&quot;</span>, <span class="ident">r</span>))
+        }
+    }
+
+    <span class="doccomment">///</span>
+    <span class="doccomment">///read f64 from stream,return it value</span>
+    <span class="doccomment">///</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_double</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">f64</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span>: [<span class="ident">u8</span>; <span class="number">8</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="number">8</span>];
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>, <span class="number">0</span>, <span class="number">8</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">8</span> {
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">data</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">f64</span>);
+                <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
+
+            }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;End&quot;</span>))
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;read length error for f64,need length 8,read length {}&quot;</span>, <span class="ident">r</span>))
+        }
+    }
+
+
 
     <span class="doccomment">///</span>
     <span class="doccomment">///  read vec&lt;u8&gt; from the current stream,can specify need read length to buffer</span>
@@ -469,7 +595,7 @@
     <span class="doccomment">///    let rt= rs.read_u8_array(1024).unwrap();</span>
     <span class="doccomment">///    assert_eq!(data[..],rt[..] );</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8_array</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,<span class="ident">len</span>:<span class="ident">i32</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8_array</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,<span class="ident">len</span>:<span class="ident">u32</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,<span class="ident">String</span><span class="op">&gt;</span>{
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">array</span>:<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;=</span><span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="kw">for</span> <span class="ident">_i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
@@ -493,6 +619,42 @@
 
         }
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">array</span>);
+    }
+
+
+    <span class="kw">fn</span> <span class="ident">read7bit_encode_to_int</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span><span class="op">=</span><span class="number">0</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a1</span>:<span class="ident">u32</span><span class="op">=</span><span class="number">0</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a2</span>:<span class="ident">u32</span><span class="op">=</span><span class="number">0</span>;
+
+        <span class="kw">loop</span>{
+            <span class="kw">if</span> <span class="ident">a1</span> <span class="op">==</span> <span class="number">0x23</span>{
+                <span class="kw">return</span>  <span class="prelude-val">Err</span>(<span class="string">&quot;bad 7 bit i32&quot;</span>.<span class="ident">to_string</span>())
+            }
+            <span class="kw">let</span> <span class="ident">r</span><span class="op">=</span><span class="self">self</span>.<span class="ident">read_byte</span>();
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>)<span class="op">=</span><span class="ident">r</span>{
+                <span class="ident">i</span><span class="op">=</span><span class="ident">v</span>;
+            }
+
+            <span class="ident">a1</span><span class="op">|=</span>((<span class="ident">i</span><span class="kw-2">&amp;</span><span class="number">0x7f</span>)<span class="op">&lt;&lt;</span><span class="ident">a2</span>) <span class="kw">as</span> <span class="ident">u32</span>;
+            <span class="ident">a2</span><span class="op">+=</span><span class="number">7</span>;
+
+            <span class="kw">if</span> <span class="ident">i</span><span class="kw-2">&amp;</span><span class="number">0x80</span> <span class="op">==</span><span class="number">0</span>{
+                <span class="kw">break</span>;
+            }
+        }
+
+        <span class="prelude-val">Ok</span>(<span class="ident">a1</span>)
+    }
+
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// read string to current stream</span>
+    <span class="doccomment">///</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_string</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)<span class="op">-&gt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>,<span class="ident">String</span><span class="op">&gt;</span>{
+        <span class="kw">let</span> <span class="ident">capacity</span>:<span class="ident">u32</span><span class="op">=</span><span class="self">self</span>.<span class="ident">read7bit_encode_to_int</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">data</span><span class="op">=</span><span class="self">self</span>.<span class="ident">read_u8_array</span>(<span class="ident">capacity</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">str</span><span class="op">=</span><span class="ident">String</span>::<span class="ident">from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>);
+        <span class="prelude-val">Ok</span>(<span class="ident">str</span>.<span class="ident">to_string</span>())
     }
 
 }
