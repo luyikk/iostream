@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["FileAccess","Defines constants for read, write, or read/write access to a file."],["FileMode",""]],"struct":[["FileStream","the file stream from disk file,you can use it, wr file"]],"trait":[["FsOption","from std::fs::File open file stream"]]});
