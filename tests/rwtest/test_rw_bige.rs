@@ -149,4 +149,6 @@ fn test_u64(){
 
     assert_eq!(w1,r1);
     assert_eq!(w2,r2);
+
+    //close
 }
