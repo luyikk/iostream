@@ -1,6 +1,4 @@
-/target/debug
-/target/release
-/target/.rustc_info.json
+/target
 c.data
 CMakeLists.txt
 **/*.rs.bk

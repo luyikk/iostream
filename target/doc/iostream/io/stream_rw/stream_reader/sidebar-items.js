@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["StreamReader","reader stream struct"]]});

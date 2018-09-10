@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["StreamWriter","write stream struct"]]});
