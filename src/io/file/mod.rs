@@ -7,6 +7,7 @@ use std::io::ErrorKind;
 use std::fs::remove_file;
 use std::io::Write;
 use std::io::Read;
+use std::io;
 
 
 
@@ -268,7 +269,30 @@ impl FileStream{
                                         }
                                     },
                                     Err(e)=>{
-                                        return Err(format!("path:{0} Append ReadWrite err:{1}", path, e))
+
+                                        if e.kind() == ErrorKind::NotFound {
+                                            _res = OpenOptions::new().create(true).write(true).read(true).open(path);
+
+                                            match _res {
+                                                Ok(file) => {
+                                                    _file = file;
+                                                    let rt=  _file.seek(SeekFrom::End(0));
+
+                                                    match rt {
+                                                        Ok(i)=>_position=i,
+                                                        Err(e)=> return Err(format!("path:{0} Append ReadWrite create seek err:{1}", path, e))
+                                                    }
+
+                                                },
+                                                Err(e) => {
+                                                    return Err(format!("path:{0} Append ReadWrite create err:{1}", path, e))
+                                                }
+                                            }
+                                        } else {
+                                            return Err(format!("path:{0} Append ReadWrite err:{1}", path, e))
+                                        }
+
+
                                     }
                                 }
                             },
@@ -425,7 +449,26 @@ impl FileStream{
                                         }
                                     },
                                     Err(e) => {
-                                        return Err(format!("path:{0} Append Write err:{1}", path, e))
+                                        if e.kind() == ErrorKind::NotFound {
+                                            _res = OpenOptions::new().create(true).write(true).open(path);
+
+                                            match _res {
+                                                Ok(file)=> {
+                                                    _file = file;
+                                                    let rt = _file.seek(SeekFrom::End(0));
+                                                    match rt {
+                                                        Ok(i)=>_position=i,
+                                                        Err(e)=>  return Err(format!("path:{0} Append Write create seek err:{1}", path, e))
+                                                    }
+                                                },
+                                                Err(e)=>{
+                                                    return Err(format!("path:{0} Append Write err:{1}", path, e))
+                                                }
+
+                                            }
+                                        }else {
+                                            return Err(format!("path:{0} Append Write err:{1}", path, e))
+                                        }
                                     }
                                 }
                             },
@@ -706,7 +749,42 @@ impl Stream for FileStream{
 /// from std::fs::File open file stream
 ///
 pub trait FsOption {
-    fn open_fs(path:&str,mode:FileMode,access:FileAccess)->Result<FileStream,String> ;
+    ///
+    /// open filestream from path
+    ///
+    fn open_fs(path:&str,mode:FileMode,access:FileAccess)->Result<FileStream,String>;
+    ///
+    ///  read file all content to string
+    ///
+    fn read_all_text(path:&str)->Result<String,String>;
+
+    ///
+    /// read all line from file
+    ///
+    fn read_all_lines(path:&str)->Result<Vec<String>,String>;
+    ///
+    ///  write all string to path file
+    ///
+    fn write_all_text(path:&str,text:&str) -> Result<(), String>;
+    ///
+    ///  Append the all row to the path file. If it is not found, it will be created.
+    ///
+    fn append_all_text(path:&str,text:&str)->Result<(), String>;
+
+    ///
+    /// Append the row to the path file. If it is not found, it will be created.
+    ///
+    fn append_line(path:&str,text:&str)->Result<(), String>;
+
+    ///
+    ///  append the all line to the path file
+    ///
+    fn append_all_lines(path:&str,lines:&[&str])->Result<(), String>;
+
+    ///
+    /// delete file from path
+    ///
+    fn delete(path:&str)-> io::Result<()>;
 }
 
 /// use std::fs::File
@@ -714,7 +792,51 @@ pub trait FsOption {
 /// let mut fs= File::open_fs("7.data", FileMode::CreateNew, FileAccess::ReadWrite).unwrap();
 ///
 impl FsOption for File{
+
     fn open_fs(path: &str, mode: FileMode, access: FileAccess) ->Result<FileStream,String> {
         FileStream::new(path,mode,access)
     }
+
+    fn read_all_text(path: &str) -> Result<String, String> {
+        let mut fs = File::open_fs(path, FileMode::Open, FileAccess::Read)?;
+        let mut rs = super::StreamReader::from(&mut fs)?;
+        rs.read_all_text()
+    }
+
+    fn read_all_lines(path:&str)->Result<Vec<String>,String>{
+        let mut fs = File::open_fs(path, FileMode::Open, FileAccess::Read)?;
+        let mut rs = super::StreamReader::from(&mut fs)?;
+        rs.read_all_lines()
+    }
+
+    fn write_all_text(path:&str,text:&str) -> Result<(), String> {
+        let mut fs = File::open_fs(path, FileMode::OpenOrCreate, FileAccess::Write)?;
+        let mut ws=super::StreamWriter::from(&mut fs)?;
+        ws.write_all(text.as_bytes())
+    }
+
+    fn append_all_text(path:&str,text:&str)->Result<(), String>{
+        let mut fs = File::open_fs(path, FileMode::Append, FileAccess::Write)?;
+        let mut ws=super::StreamWriter::from(&mut fs)?;
+        ws.write_all(text.as_bytes())
+    }
+
+    fn append_line(path:&str,text:&str)->Result<(), String>{
+        let mut fs = File::open_fs(path, FileMode::Append, FileAccess::Write)?;
+        let mut ws=super::StreamWriter::from(&mut fs)?;
+        ws.write_line(text)
+    }
+
+    fn append_all_lines(path:&str,lines:&[&str])->Result<(), String>{
+        let mut fs = File::open_fs(path, FileMode::Append, FileAccess::Write)?;
+        let mut ws=super::StreamWriter::from(&mut fs)?;
+        ws.write_all_lines(lines)
+    }
+
+    fn delete(path:&str)-> io::Result<()>{
+        remove_file(path)
+    }
+
+
+
 }

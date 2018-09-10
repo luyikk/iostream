@@ -217,3 +217,79 @@ fn test_wr_string(){
 
     println!("{}",re);
 }
+
+
+#[test]
+fn test_wr_line()
+{
+    let mut ms=MemoryStream::new();
+    let str="aaaa1aaaa:)";
+    {
+        let mut ws = StreamWriter::from(&mut ms).unwrap();
+        ws.write_line(&str).unwrap();
+    }
+
+    ms.set_position(0).unwrap();
+
+    let mut rs=StreamReader::from(&mut ms).unwrap();
+    let re= rs.read_line().unwrap();
+
+    assert_eq!(str,&re[..(re.len()-1)]);
+
+    println!("{}",rs.base_stream.position());
+
+    let re= rs.read_line().unwrap();
+
+    println!("{}",re);
+}
+
+
+#[test]
+fn test_wr_lines()
+{
+    let mut ms=MemoryStream::new();
+    let str="aaaa1aaaa:)";
+    {
+        let mut ws = StreamWriter::from(&mut ms).unwrap();
+        ws.write_line(&str).unwrap();
+        ws.write_line(&str).unwrap();
+        ws.write_line(&str).unwrap();
+    }
+
+    ms.set_position(0).unwrap();
+
+    let mut rs=StreamReader::from(&mut ms).unwrap();
+    let re= rs.read_all_lines().unwrap();
+
+    for x in re{
+        assert_eq!(str,&x[..(x.len()-1)]);
+        print!("{}",x);
+    }
+
+
+}
+
+#[test]
+fn test_wr_all_text()
+{
+    let mut ms=MemoryStream::new();
+
+    let mut strlist:Vec<&str>=Vec::new();
+    for _i in 0..10{
+        strlist.push("aaaaaaaaaa1");
+    }
+
+    {
+        let mut ws = StreamWriter::from(&mut ms).unwrap();
+        ws.write_all_lines(&strlist).unwrap();
+    }
+
+    ms.set_position(0).unwrap();
+
+    let mut rs=StreamReader::from(&mut ms).unwrap();
+    let re= rs.read_all_text().unwrap();
+
+    println!("{}",re);
+
+
+}

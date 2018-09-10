@@ -253,9 +253,21 @@ impl<'a>  StreamWriter<'a > {
     /// Writes a row string, which adds the ending character '\n'
     ///
     pub fn write_line(&mut self,value:&str)->Result<(),String> {
-        self.write_string(value)?;
-        let enter='\n' as u8;
-        self.write_byte(&enter)
+
+        let source=value.to_string()+"\n";
+        self.write_all(&source.as_bytes())
     }
+
+    ///
+    /// writes all row string from str array
+    ///
+    pub fn write_all_lines(&mut self,value:&[&str])->Result<(),String>{
+        for i in value.iter(){
+            self.write_line(i)?;
+        }
+        Ok(())
+    }
+
+
 
 }

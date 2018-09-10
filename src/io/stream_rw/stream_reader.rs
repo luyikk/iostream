@@ -1,6 +1,7 @@
 use super::super::Stream;
 use super::*;
 
+
 ///reader stream struct
 pub struct StreamReader<'a>{
     pub base_stream:&'a mut Stream,
@@ -375,6 +376,48 @@ impl<'a>  StreamReader<'a >{
         return  Ok(String::from_utf8_lossy(&data).to_string())
 
     }
+
+    ///
+    ///  read all str line from current stream
+    ///
+    pub fn read_all_lines(&mut self)->Result<Vec<String>,String>{
+
+        let mut  list:Vec<String>=Vec::new();
+
+        loop {
+            let rt = self.peek();
+
+            if let Err(e) = rt {
+                if e == "End" {
+                    break;
+                } else {
+                    return Err(e);
+                }
+            } else if let Ok(_i) = rt {
+
+                let str=self.read_line()?;
+                list.push(str);
+            }
+        }
+
+        return Ok(list)
+    }
+
+    ///
+    ///  read all data to string
+    ///
+    pub fn read_all_text(&mut self)->Result<String,String>{
+        let mut data:Vec<u8>=Vec::new();
+        let size= self.read_all(& mut data)?;
+
+        if size >0{
+            Ok(String::from_utf8_lossy(&data).to_string())
+        }else {
+            Err("cannot read the stream".to_string())
+        }
+    }
+
+
 
 }
 

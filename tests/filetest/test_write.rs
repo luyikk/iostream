@@ -45,3 +45,34 @@ fn append_test()
 
     remove_file("3.data").unwrap();
 }
+
+#[test]
+fn append_fs_option(){
+
+    File::write_all_text("b.txt","abccdeff\nffffffffffffff\naaaaaaaaaaaa\n").unwrap();
+    let mut strlist:Vec<&str>=Vec::new();
+    for _i in 0..10{
+        strlist.push("aaaaaaaaaa1");
+    }
+    {
+        File::append_all_lines("b.txt", &strlist).unwrap();
+        File::append_line("b.txt", "close~~~!!!").unwrap();
+        File::append_all_text("b.txt", ":hhhhhhhhhhhhhhhh").unwrap();
+        File::write_all_text("b.txt","fxxxxxxxxxxxxxxxxx").unwrap();
+    }
+
+
+    let x= File::read_all_text("b.txt").unwrap();
+
+    println!("{}",x);
+
+    let lines=File::read_all_lines("b.txt").unwrap();
+
+
+    for v in lines{
+        print!("{}",v);
+    }
+
+    File::delete("b.txt").unwrap();
+
+}
