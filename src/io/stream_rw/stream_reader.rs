@@ -326,5 +326,55 @@ impl<'a>  StreamReader<'a >{
         Ok(str.to_string())
     }
 
+
+    ///
+    ///  read str line from current stream
+    ///
+    pub fn read_line(&mut self)->Result<String,String>{
+
+        let mut data:Vec<u8>=Vec::new();
+
+        loop{
+
+            let rt=  self.read_byte();
+
+            match rt {
+                Ok(i)=>
+                    {
+                        data.push(i);
+
+                        if i=='\r' as u8 {
+                            let r = self.peek();
+                            if let Ok(i) = r {
+                                if i == '\n' as u8 { //if windows \r\n
+                                    data.push(i);
+                                    let position = self.base_stream.position();
+                                    self.base_stream.set_position(position + 1)?;
+                                }
+                            }
+
+                            break;
+                        }else if i=='\n' as u8{
+                            break;
+                        }
+
+                        continue;
+                    },
+                Err(e)=>
+                    {
+                        if e=="End"{
+                            break;
+                        }
+                        else {
+                            return Err(e);
+                        }
+                    }
+            }
+        }
+
+        return  Ok(String::from_utf8_lossy(&data).to_string())
+
+    }
+
 }
 

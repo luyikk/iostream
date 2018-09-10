@@ -249,4 +249,13 @@ impl<'a>  StreamWriter<'a > {
         Ok(())
     }
 
+    ///
+    /// Writes a row string, which adds the ending character '\n'
+    ///
+    pub fn write_line(&mut self,value:&str)->Result<(),String> {
+        self.write_string(value)?;
+        let enter='\n' as u8;
+        self.write_byte(&enter)
+    }
+
 }
