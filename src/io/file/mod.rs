@@ -8,6 +8,9 @@ use std::fs::remove_file;
 use std::io::Write;
 use std::io::Read;
 use std::io;
+use std::path::*;
+use std::fs::rename;
+use std::fs::copy;
 
 
 
@@ -788,12 +791,30 @@ pub trait FsOption {
     /// delete file from path
     ///
     fn delete(path:&str)-> io::Result<()>;
+    ///
+    /// exists file
+    ///
+    fn is_exists(path:&str)->bool;
+
+    ///
+    /// re file name
+    ///
+    fn rename(source:&str,target:&str)->bool;
+
+    ///
+    /// copy to file
+    ///
+    fn copy_to(from:&str,to:&str)->io::Result<u64>;
 }
 
 /// use std::fs::File
 ///
 /// # Examples
 ///```
+/// extern  crate iostream;
+/// use iostream::io::*;
+/// use std::fs::*;
+///
 /// let mut fs= File::open_fs("7.data", FileMode::CreateNew, FileAccess::ReadWrite).unwrap();
 ///```
 impl FsOption for File{
@@ -842,6 +863,29 @@ impl FsOption for File{
         remove_file(path)
     }
 
+    fn is_exists(path:&str)->bool{
 
+       let path=  Path::new(path);
+
+       if path.exists(){
+           if path.is_file(){
+               return true;
+           }
+       }
+        false
+    }
+
+    fn rename(from:&str,to:&str)->bool {
+        let rt = rename(from, to);
+
+        match rt {
+            Ok(())=> return true,
+            Err(_e)=>return false
+        }
+    }
+
+    fn copy_to(from:&str,to:&str)->io::Result<u64>{
+       copy(from,to)
+    }
 
 }
