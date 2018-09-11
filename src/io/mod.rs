@@ -29,6 +29,7 @@ pub trait Stream{
 
     ///
     /// copy current stream to target stream
+    /// # Examples
     ///```rust
     ///  use iostream::io::*;
     ///  use std::fs::File;

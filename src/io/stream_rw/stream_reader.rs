@@ -11,6 +11,7 @@ pub struct StreamReader<'a>{
 impl<'a>  StreamReader<'a >{
 
     /// from stream use LittleEndian reader integer
+    /// # Examples
     ///```rust
     /// use iostream::io::*;
     /// let mut ms=MemoryStream::new();
@@ -25,6 +26,7 @@ impl<'a>  StreamReader<'a >{
         Ok(StreamReader { base_stream: stream ,endian:EndianType::LittleEndian})
     }
     /// from stream use BigEndian reader integer
+    /// # Examples
     ///```rust
     /// use iostream::io::*;
     /// let mut ms=MemoryStream::new();
@@ -253,6 +255,7 @@ impl<'a>  StreamReader<'a >{
 
     ///
     ///  read vec<u8> from the current stream,can specify need read length to buffer
+    /// # Examples
     ///```rust
     ///    use iostream::io::*;
     ///    let mut ms=MemoryStream::new();

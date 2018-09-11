@@ -3,6 +3,7 @@ extern crate core;
 use io::SeekOrigin;
 use self::core::ptr::copy_nonoverlapping;
 
+/// the memory stream from memory,you can use it,wr memory
 pub struct MemoryStream{
     data:Vec<u8>,
     position:u64,
@@ -88,6 +89,7 @@ impl Stream for MemoryStream {
         true
     }
 
+    /// # Examples
     ///```rust
     ///    use iostream::io::*;
     ///
@@ -136,6 +138,7 @@ impl Stream for MemoryStream {
         Ok(need_cp_num)
     }
 
+    /// # Examples
     ///```rust
     ///    use iostream::io::*;
     ///    let mut ms=MemoryStream::new();
@@ -175,6 +178,7 @@ impl Stream for MemoryStream {
         }
     }
 
+    ///# Examples
     /// ```rust
     ///    use iostream::io::*;
     ///
@@ -244,6 +248,7 @@ impl Stream for MemoryStream {
         }
     }
 
+    ///# Examples
     ///```rust
     ///use iostream::io::*;
     ///
@@ -270,7 +275,7 @@ impl Stream for MemoryStream {
         }
     }
 
-
+    /// # Examples
     ///```rust
     ///use iostream::io::*;
     ///let mut ms= MemoryStream::new();

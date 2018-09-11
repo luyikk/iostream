@@ -9,6 +9,7 @@ pub struct StreamWriter<'a>{
 
 impl<'a>  StreamWriter<'a > {
     /// from stream use LittleEndian write integer
+    /// # Examples
     ///```rust
     /// use iostream::io::*;
     /// let mut ms=MemoryStream::new();
@@ -25,6 +26,7 @@ impl<'a>  StreamWriter<'a > {
     }
 
     /// from stream use BigEndian write integer
+    /// # Examples
     ///```rust
     /// use iostream::io::*;
     /// let mut ms=MemoryStream::new();

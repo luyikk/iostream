@@ -12,6 +12,8 @@ use std::io;
 
 
 #[derive(Debug)]
+
+/// file stream create mode
 pub enum FileMode{
 
     ///     Specifies that the operating system should create a new file. This requires System.Security.Permissions.FileIOPermissionAccess.Write
@@ -62,7 +64,7 @@ pub enum FileMode{
     Append = 6
 }
 
-///    Defines constants for read, write, or read/write access to a file.
+///  Defines constants for read, write, or read/write access to a file.
 pub enum FileAccess {
     ///
     ///
@@ -93,6 +95,7 @@ pub struct FileStream {
 
 impl FileStream{
     /// create filestream, path is file path, mode is open mode, access is wr mode
+    /// # Examples
     ///```rus
     /// let mut fs=File::open_fs("c.data",FileMode::CreateNew,FileAccess::ReadWrite).unwrap();
     ///```
@@ -789,8 +792,10 @@ pub trait FsOption {
 
 /// use std::fs::File
 ///
+/// # Examples
+///```
 /// let mut fs= File::open_fs("7.data", FileMode::CreateNew, FileAccess::ReadWrite).unwrap();
-///
+///```
 impl FsOption for File{
 
     fn open_fs(path: &str, mode: FileMode, access: FileAccess) ->Result<FileStream,String> {

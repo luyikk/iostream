@@ -1,5 +1,6 @@
 [package]
 name = "iostream"
 version = "0.1.0"
+license = "MIT OR Apache-2.0"
 authors = ["luyikk <luyikk@126.com>"]
-
+description = "the project is rust io stream.you can easily use it to manipulate files stream and memory stream. "
