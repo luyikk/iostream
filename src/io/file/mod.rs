@@ -99,8 +99,10 @@ pub struct FileStream {
 impl FileStream{
     /// create filestream, path is file path, mode is open mode, access is wr mode
     /// # Examples
-    ///```rus
-    /// let mut fs=File::open_fs("c.data",FileMode::CreateNew,FileAccess::ReadWrite).unwrap();
+    ///```rust
+    /// use iostream::io::*;
+    /// use std::fs::*;
+    /// let mut fs=FileStream::new("c.data",FileMode::CreateNew,FileAccess::ReadWrite).unwrap();
     ///```
    pub fn new(path:&str,mode:FileMode,access:FileAccess)->Result<FileStream,String>{
 
