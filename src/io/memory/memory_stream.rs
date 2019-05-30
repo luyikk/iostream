@@ -1,59 +1,58 @@
 use super::super::Stream;
 extern crate core;
-use io::SeekOrigin;
 use self::core::ptr::copy_nonoverlapping;
+use io::SeekOrigin;
+use std::error::Error;
+use StreamError;
 
 /// the memory stream from memory,you can use it,wr memory
-pub struct MemoryStream{
-    data:Vec<u8>,
-    position:u64,
+pub struct MemoryStream {
+    data: Vec<u8>,
+    position: u64,
 }
 
 impl MemoryStream {
-    pub fn new()->MemoryStream{
-
-        MemoryStream{
-            data:Vec::new(),
-            position:0
+    pub fn new() -> MemoryStream {
+        MemoryStream {
+            data: Vec::new(),
+            position: 0,
         }
     }
 
-    pub fn new_to(buf:&[u8])->MemoryStream{
+    pub fn new_to(buf: &[u8]) -> MemoryStream {
+        let m = if buf.len() > 0 {
+            MemoryStream {
+                data: Vec::from(buf),
+                position: 0,
+            }
+        } else {
+            MemoryStream {
+                data: Vec::new(),
+                position: 0,
+            }
+        };
 
-       let m= if buf.len()>0{
-           MemoryStream{
-               data:Vec::from(buf),
-               position:0
-           }
-       }else {
-           MemoryStream{
-               data:Vec::new(),
-               position:0
-           }
-       };
-
-       m
+        m
     }
 }
 
-impl MemoryStream{
+impl MemoryStream {
     ///  return current stream data to Vec<u8>
-    pub fn to_vec(&self)->Vec<u8>{
+    pub fn to_vec(&self) -> Vec<u8> {
         self.data.clone()
     }
 
     ///Clears the vector, removing all values,and set position =0
-    pub fn clear(&mut self){
+    pub fn clear(&mut self) {
         self.data.clear();
-        self.position =0;
+        self.position = 0;
     }
 }
 
 impl Stream for MemoryStream {
-
-    fn set_position(&mut self, _potion: u64) -> Result<(), String> {
+    fn set_position(&mut self, _potion: u64) -> Result<(), Box<dyn Error>> {
         if _potion > self.data.len() as u64 {
-            return Err(format!("set position value greater then stream length,please use Seek"));
+            StreamError::from_str("set position value greater then stream length,please use Seek")?
         }
         self.position = _potion;
         Ok(())
@@ -67,7 +66,7 @@ impl Stream for MemoryStream {
         self.data.len() as u64
     }
 
-    fn set_length(&mut self, len: u64) -> Result<(), String> {
+    fn set_length(&mut self, len: u64) -> Result<(), Box<dyn Error>> {
         if len < self.data.len() as u64 {
             self.position = len;
         }
@@ -117,16 +116,15 @@ impl Stream for MemoryStream {
     ///    }
     ///    println!();
     /// ```
-    fn read_all(&mut self, buf: &mut Vec<u8>) -> Result<usize, String> {
+    fn read_all(&mut self, buf: &mut Vec<u8>) -> Result<usize, StreamError> {
+        let _potion = self.position as usize;
+        let len = self.data.len();
 
-        let _potion=self.position as usize;
-        let len=self.data.len();
-
-        if _potion>=len{
-            return Err("End".to_string())
+        if _potion >= len {
+            return Err(StreamError::new_end());
         }
 
-        let need_cp_num=len-_potion;
+        let need_cp_num = len - _potion;
 
         let bk = buf.len();
         buf.resize(bk + need_cp_num, 0);
@@ -134,7 +132,7 @@ impl Stream for MemoryStream {
         let sbuf = &mut buf[bk..];
         sbuf.copy_from_slice(&self.data[_potion..]);
 
-        self.position +=need_cp_num as u64;
+        self.position += need_cp_num as u64;
         Ok(need_cp_num)
     }
 
@@ -151,21 +149,21 @@ impl Stream for MemoryStream {
     ///    let len=data.len();
     ///    let size = ms.read(&mut data, 0,len).unwrap();
     ///```
-    fn read(&mut self, buf: &mut [u8], offset: usize, count: usize) -> Result<usize, String> {
+    fn read(&mut self, buf: &mut [u8], offset: usize, count: usize) -> Result<usize, StreamError> {
         let mut _offset = offset;
         let end = _offset + count;
         if end > buf.len() {
-           return   Err(format!("offset+count greater than equal to or equal to buf length,\n buf length: {0}\n offset+count length： {1}",buf.len(),end))
+            StreamError::from_str(&format!("offset+count greater than equal to or equal to buf length,\n buf length: {0}\n offset+count length： {1}", buf.len(), end))?
         }
 
         if self.position >= self.data.len() as u64 {
-            return Err("End".to_string())
+            StreamError::end()?
         }
 
-        let mut rcount=self.data.len()-self.position as usize;
+        let mut rcount = self.data.len() - self.position as usize;
 
-        if rcount>count{
-            rcount=count;
+        if rcount > count {
+            rcount = count;
         }
 
         let targetbuf = &mut buf[offset..end];
@@ -190,60 +188,53 @@ impl Stream for MemoryStream {
     ///    print!("{}",d);
     ///    }
     /// ```
-    fn read_byte(&mut self) -> Result<u8, String> {
+    fn read_byte(&mut self) -> Result<u8, StreamError> {
         if self.position < self.data.len() as u64 {
             let p = self.data.get(self.position as usize);
             match p {
-                Some(i) =>
-                    {
-                        let x: u8 = i.clone();
-                        self.position += 1;
-                        Ok(x)
-                    },
-                None =>
-                    {
-                        return Err("End".to_string())
-                    }
+                Some(i) => {
+                    let x: u8 = i.clone();
+                    self.position += 1;
+                    Ok(x)
+                }
+                None => Err(StreamError::new_end()),
             }
         } else {
-            Err("End".to_string())
+            Err(StreamError::new_end())
         }
     }
 
-
-    fn seek(&mut self, offset: i64, origin: SeekOrigin) -> Result<u64, String> {
+    fn seek(&mut self, offset: i64, origin: SeekOrigin) -> Result<u64, Box<dyn Error>> {
         match origin {
-            SeekOrigin::Begin =>
-                {
-                    self.position = offset as u64;
+            SeekOrigin::Begin => {
+                self.position = offset as u64;
 
+                if self.position > self.data.len() as u64 {
+                    self.data.resize(self.position as usize, 0);
+                }
+
+                return Ok(self.position);
+            }
+            SeekOrigin::End => {
+                if offset == 0 {
+                    self.position = self.data.len() as u64;
+                    return Ok(self.position);
+                } else {
+                    let p = (self.data.len() as i64 + offset) as u64;
+                    self.position = p;
                     if self.position > self.data.len() as u64 {
                         self.data.resize(self.position as usize, 0);
                     }
-
-                    return Ok(self.position)
-                },
-            SeekOrigin::End =>
-                {
-                    if offset == 0 {
-                        self.position = self.data.len() as u64;
-                        return Ok(self.position)
-                    } else {
-                        let p = (self.data.len() as i64 + offset) as u64;
-                        self.position = p;
-                        if self.position > self.data.len() as u64 {
-                            self.data.resize(self.position as usize, 0);
-                        }
-                        return Ok(self.position)
-                    }
-                },
+                    return Ok(self.position);
+                }
+            }
             SeekOrigin::Current => {
                 let p = (self.position as i64 + offset) as u64;
                 self.position = p;
                 if self.position > self.data.len() as u64 {
                     self.data.resize(self.position as usize, 0);
                 }
-                return Ok(self.position)
+                return Ok(self.position);
             }
         }
     }
@@ -256,7 +247,7 @@ impl Stream for MemoryStream {
     ///let data: [u8; 1024] = [2; 1024];
     ///ms.write_all(&data).unwrap();
     ///```
-    fn write_all(&mut self, buf: &[u8]) -> Result<(), String> {
+    fn write_all(&mut self, buf: &[u8]) -> Result<(), Box<dyn Error>> {
         unsafe {
             let current_index = self.position as usize;
             let source_len = self.data.len();
@@ -282,30 +273,24 @@ impl Stream for MemoryStream {
     ///let data2:[u8;100]=[2;100];
     ///ms.write(&data2,50,50).unwrap();
     ///```
-    fn write(&mut self, buf: &[u8], offset: usize, count: usize) -> Result<usize, String> {
+    fn write(&mut self, buf: &[u8], offset: usize, count: usize) -> Result<usize, Box<dyn Error>> {
         let mut _offset = offset;
         let end = _offset + count;
 
         if end > buf.len() {
-            return  Err(format!("offset+count greater than equal to or equal to buf length,\n buf length: {0}\n offset+count length： {1}",buf.len(),end))
+            StreamError::from_str(&format!("offset+count greater than equal to or equal to buf length,\n buf length: {0}\n offset+count length： {1}", buf.len(), end))?
         }
         let x = &buf[offset..end];
 
         let rt = self.write_all(x);
 
         match rt {
-            Ok(()) =>
-                {
-                    Ok(count)
-                },
-            Err(e) =>
-                {
-                    Err(e)
-                }
+            Ok(()) => Ok(count),
+            Err(e) => Err(e),
         }
     }
 
-    fn flush(&mut self) -> Result<(), String> {
+    fn flush(&mut self) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 }

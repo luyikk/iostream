@@ -30,8 +30,6 @@ fn read_test()
     assert_eq!(lengt,data.len());
     fs.set_position(0).unwrap();
 
-
-
     let mut readlengt=0;
 
     let mut data:[u8;100]=[0;100];
@@ -51,7 +49,7 @@ fn read_test()
 
 
     let mut data=Vec::new();
-    let lengt=  fs.read_all(&mut data).expect("");
+    let lengt=  fs.read_all(&mut data).unwrap();
 
     println!("{}",lengt);
 
