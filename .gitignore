@@ -3,3 +3,5 @@ c.data
 CMakeLists.txt
 **/*.rs.bk
 Cargo.lock
+/cmake-build-debug
+/.idea
