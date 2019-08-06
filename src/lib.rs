@@ -18,7 +18,6 @@ impl StreamError{
     pub fn new_bad() ->StreamError{
         StreamError{ err_type:StreamBad}
     }
-
     pub fn new_end() ->StreamError{
         StreamError{ err_type:End}
     }
@@ -47,7 +46,7 @@ impl Error for StreamError{
         self.err_type.description()
     }
 
-    fn cause(&self) -> Option<&Error> {
+    fn cause(&self) -> Option<&dyn Error> {
         Some(&self.err_type)
     }
 }

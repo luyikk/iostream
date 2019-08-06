@@ -41,7 +41,7 @@ pub trait Stream {
     ///  let mut fs=File::open_fs("c.data",FileMode::CreateNew,FileAccess::ReadWrite).unwrap();
     ///  ms.copy_to(&mut fs);
     /// ```
-    fn copy_to(&mut self, target: &mut Stream) -> Result<(), Box<dyn Error>> {
+    fn copy_to(&mut self, target: &mut dyn Stream) -> Result<(), Box<dyn Error>> {
         if !self.can_read() {
             StreamError::from_str("the current stream cannot read")?
         }

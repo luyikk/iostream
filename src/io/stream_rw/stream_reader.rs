@@ -5,7 +5,7 @@ use {StreamError, StreamErrorKind};
 
 ///reader stream struct
 pub struct StreamReader<'a> {
-    pub base_stream: &'a mut Stream,
+    pub base_stream: &'a mut dyn Stream,
     endian: EndianType,
 }
 
@@ -18,7 +18,7 @@ impl<'a> StreamReader<'a> {
     /// //...write data to ms
     /// let mut ws: StreamReader = StreamReader::from(&mut ms).unwrap();
     /// ```
-    pub fn from(stream: &'a mut Stream) -> Result<StreamReader<'a>, String> {
+    pub fn from(stream: &'a mut dyn Stream) -> Result<StreamReader<'a>, String> {
         if !stream.can_read() {
             return Err("the stream not can read".to_string());
         }
@@ -36,7 +36,7 @@ impl<'a> StreamReader<'a> {
     /// //...write data to ms
     /// let mut ws: StreamReader = StreamReader::from_big_endian(&mut ms).unwrap();
     /// ```
-    pub fn from_big_endian(stream: &'a mut Stream) -> Result<StreamReader<'a>, String> {
+    pub fn from_big_endian(stream: &'a mut dyn Stream) -> Result<StreamReader<'a>, String> {
         if !stream.can_read() {
             return Err("the stream not can read".to_string());
         }

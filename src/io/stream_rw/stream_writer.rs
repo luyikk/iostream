@@ -4,7 +4,7 @@ use std::error::Error;
 
 ///write stream struct
 pub struct StreamWriter<'a> {
-    pub base_stream: &'a mut Stream,
+    pub base_stream: &'a mut dyn Stream,
     endian: EndianType,
 }
 
@@ -17,7 +17,7 @@ impl<'a> StreamWriter<'a> {
     /// //...write data to ms
     /// let mut ws: StreamWriter = StreamWriter::from(&mut ms).unwrap();
     /// ```
-    pub fn from(stream: &'a mut Stream) -> Result<StreamWriter<'a>, String> {
+    pub fn from(stream: &'a mut dyn Stream) -> Result<StreamWriter<'a>, String> {
         if !stream.can_write() {
             return Err("is stream not can write!".to_string());
         }
@@ -36,7 +36,7 @@ impl<'a> StreamWriter<'a> {
     /// //...write data to ms
     /// let mut ws: StreamReader = StreamReader::from_big_endian(&mut ms).unwrap();
     /// ```
-    pub fn from_big_endian(stream: &'a mut Stream) -> Result<StreamWriter<'a>, String> {
+    pub fn from_big_endian(stream: &'a mut dyn Stream) -> Result<StreamWriter<'a>, String> {
         if !stream.can_write() {
             return Err("is stream not can write!".to_string());
         }
